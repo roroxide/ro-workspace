@@ -1,0 +1,18 @@
+<div class="flex h-screen bg-gray-50 text-gray-800 font-sans overflow-hidden relative" dir="rtl">
+  
+  <app-sidebar 
+    [isOpen]="isSidebarOpen" 
+    (closeSidebar)="toggleSidebar()" 
+    (newTaskClicked)="openNewTaskModal()"
+    (categoriesClicked)="openCategoriesModal()"> </app-sidebar>
+
+  <main class="flex-1 h-screen flex flex-col overflow-hidden">
+    <app-header (menuClicked)="toggleSidebar()"></app-header>
+    <app-kanban-board class="flex-1 flex flex-col min-h-0"></app-kanban-board>
+  </main>
+
+  <app-new-task-modal [isOpen]="isNewTaskModalOpen" (closeModal)="closeNewTaskModal()"></app-new-task-modal>
+
+  <app-categories-modal [isOpen]="isCategoriesModalOpen" (closeModal)="closeCategoriesModal()"></app-categories-modal>
+
+</div>

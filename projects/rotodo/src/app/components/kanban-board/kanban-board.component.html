@@ -1,0 +1,86 @@
+<div class="flex-1 h-full flex flex-col min-h-0 p-4 md:p-8 space-y-6 overflow-hidden" dir="rtl">
+  
+  <app-filter-toolbar
+    [categories]="categories"
+    [(searchQuery)]="searchQuery"
+    [(filterUrgent)]="filterUrgent"
+    [(filterImportant)]="filterImportant"
+    [(selectedFilterCategoryId)]="selectedFilterCategoryId"
+    [(columnVisibility)]="columnVisibility">
+  </app-filter-toolbar>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 h-full min-h-0 items-stretch" cdkDropListGroup>
+    
+    <div *ngIf="columnVisibility.todo" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
+      <div class="flex items-center justify-between mb-4 px-1 shrink-0">
+        <span class="font-bold text-gray-700 text-sm">آماده</span>
+        <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(todoTasks) }}</span>
+      </div>
+      
+      <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" (cdkDropListDropped)="onTaskDrop($event)" class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0 space-y-3">
+        <div *ngFor="let task of todoTasks" cdkDrag [class.hidden]="!shouldShowTask(task)" 
+             class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-red-500 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing space-y-3">
+          
+          <div class="flex justify-between items-start">
+            <span [className]="'text-xs font-bold ' + task.category.color + ' ' + task.category.bg + ' px-2 py-1 rounded'">{{ task.category.name }}</span>
+            <div class="flex gap-1 flex-wrap">
+              <span *ngIf="task.isUrgent && task.isImportant" class="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">🚨 فوری و مهم</span>
+              <span *ngIf="task.isUrgent && !task.isImportant" class="text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 px-1.5 py-0.5 rounded">📌 فوری</span>
+              <span *ngIf="!task.isUrgent && task.isImportant" class="text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded">⭐️ مهم</span>
+            </div>
+          </div>
+          
+          <h3 class="font-bold text-gray-800 text-sm leading-6">{{ task.title }}</h3>
+          <p class="text-xs text-gray-500 line-clamp-2">{{ task.desc }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="columnVisibility.doing" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
+      <div class="flex items-center justify-between mb-4 px-1 shrink-0">
+        <span class="font-bold text-gray-700 text-sm">در حال انجام</span>
+        <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doingTasks) }}</span>
+      </div>
+      
+      <div id="doingList" cdkDropList [cdkDropListData]="doingTasks" (cdkDropListDropped)="onTaskDrop($event)" class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0 space-y-3">
+        <div *ngFor="let task of doingTasks" cdkDrag [class.hidden]="!shouldShowTask(task)"
+             class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-indigo-500 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing space-y-3">
+          
+          <div class="flex justify-between items-start">
+            <span [className]="'text-xs font-bold ' + task.category.color + ' ' + task.category.bg + ' px-2 py-1 rounded'">{{ task.category.name }}</span>
+            <div class="flex gap-1 flex-wrap">
+              <span *ngIf="task.isUrgent && task.isImportant" class="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">🚨 فوری و مهم</span>
+              <span *ngIf="task.isUrgent && !task.isImportant" class="text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 px-1.5 py-0.5 rounded">📌 فوری</span>
+              <span *ngIf="!task.isUrgent && task.isImportant" class="text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded">⭐️ مهم</span>
+            </div>
+          </div>
+          
+          <h3 class="font-bold text-gray-800 text-sm leading-6">{{ task.title }}</h3>
+          <p class="text-xs text-gray-500 line-clamp-2">{{ task.desc }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="columnVisibility.done" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
+      <div class="flex items-center justify-between mb-4 px-1 shrink-0">
+        <span class="font-bold text-gray-700 text-sm">انجام شده</span>
+        <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doneTasks) }}</span>
+      </div>
+      
+      <div id="doneList" cdkDropList [cdkDropListData]="doneTasks" (cdkDropListDropped)="onTaskDrop($event)" class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0 space-y-3">
+        <div *ngFor="let task of doneTasks" cdkDrag [class.hidden]="!shouldShowTask(task)"
+             class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-emerald-500 opacity-80 hover:opacity-100 hover:shadow-md transition-all cursor-grab active:cursor-grabbing space-y-3">
+          
+          <div class="flex justify-between items-start">
+            <span [className]="'text-xs font-bold ' + task.category.color + ' ' + task.category.bg + ' px-2 py-1 rounded'">{{ task.category.name }}</span>
+            <span class="text-xs text-gray-400 line-through">تکمیل شده</span>
+          </div>
+          
+          <h3 class="font-bold text-gray-700 text-sm line-through leading-6">{{ task.title }}</h3>
+          <p class="text-xs text-gray-400 line-through line-clamp-2">{{ task.desc }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
