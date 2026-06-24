@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Category } from '../../services/task.service';
 
 @Component({
   selector: 'app-sidebar',

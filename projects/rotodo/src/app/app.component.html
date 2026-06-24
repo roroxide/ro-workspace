@@ -13,6 +13,12 @@
 
   <app-new-task-modal [isOpen]="isNewTaskModalOpen" (closeModal)="closeNewTaskModal()"></app-new-task-modal>
 
-  <app-categories-modal [isOpen]="isCategoriesModalOpen" (closeModal)="closeCategoriesModal()"></app-categories-modal>
+  <app-categories-modal
+  *ngIf="isCategoriesModalOpen"
+  [categories]="categories"
+  (close)="isCategoriesModalOpen = false"
+  (createCategory)="handleCreateCategory($event)"
+  (updateCategory)="handleUpdateCategory($event)">
+</app-categories-modal>
 
 </div>

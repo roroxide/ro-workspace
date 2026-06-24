@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 
 export interface Category {
   id: string;
   name: string;
-  color: string;
-  bg: string;
   rawColor: string;
 }
 
@@ -16,61 +14,109 @@ export interface Task {
   desc: string;
   isUrgent: boolean;
   isImportant: boolean;
-  isDone?: boolean;
+  status: TaskStatus;
 }
+
+export type TaskStatus = 'todo' | 'doing' | 'done';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  // تعریف اولیه دسته‌بندی‌ها
-  private categoriesSubject = new BehaviorSubject<Category[]>([
-    { id: 'none', name: 'بدون دسته‌بندی', color: 'text-gray-600', bg: 'bg-gray-50', rawColor: 'bg-gray-400' },
-    { id: 'company', name: 'شرکت', color: 'text-red-600', bg: 'bg-red-50', rawColor: 'bg-red-500' },
-    { id: 'personal', name: 'شخصی', color: 'text-indigo-600', bg: 'bg-indigo-50', rawColor: 'bg-indigo-500' },
-    { id: 'home', name: 'خانه', color: 'text-emerald-600', bg: 'bg-emerald-50', rawColor: 'bg-emerald-500' }
-  ]);
+  private CATEGORIES_STORAGE_KEY = 'rotodo_categories';
+  private TASKS_STORAGE_KEY = 'kanban_tasks';
 
-  categories$ = this.categoriesSubject.asObservable();
+  private defaultCategories = [
+    { 
+      id: 'none', 
+      name: 'بدون دسته‌بندی',
+      rawColor: '#9ca3af' // معادل gray-400
+    },
+    { 
+      id: 'company', 
+      name: 'شرکت',
+      rawColor: '#dc2626' // معادل red-600
+    },
+    { 
+      id: 'personal', 
+      name: 'شخصی', 
+      rawColor: '#4f46e5' // معادل indigo-600
+    },
+    { 
+      id: 'home', 
+      name: 'خانه', 
+      rawColor: '#059669' // معادل emerald-600
+    }
+  ];
 
-  // داده‌های اولیه بورد با ساختار جدید آبجکتی
-  private todoTasksSubject = new BehaviorSubject<Task[]>([
+  private defaultTasks: Task[] = [
     { 
       id: 1, 
-      category: { id: 'company', name: 'شرکت', color: 'text-red-600', bg: 'bg-red-50', rawColor: 'bg-red-500' }, 
+      category: this.defaultCategories[1], 
       title: 'طراحی داکیومنت معماری پروژه', 
       desc: 'نیازمندی‌های فنی ساختار فرانت‌اند انگولار و ابزارهای استیت منیجمنت باید مستند شوند.',
       isUrgent: true,
-      isImportant: true
-    }
-  ]);
-  
-  private doingTasksSubject = new BehaviorSubject<Task[]>([
+      isImportant: true,
+      status: 'todo'
+    },
     { 
       id: 2, 
-      category: { id: 'personal', name: 'شخصی', color: 'text-indigo-600', bg: 'bg-indigo-50', rawColor: 'bg-indigo-500' }, 
+      category: this.defaultCategories[2], 
       title: 'کدنویسی قالب اصلی بورد کامپوننت', 
       desc: 'پیاده‌سازی استایل و ساختار منوی کناری، هدر و گرید ۳ ستونه کانبان با استفاده از Tailwind.',
       isUrgent: true,
-      isImportant: false
-    }
-  ]);
-
-  private doneTasksSubject = new BehaviorSubject<Task[]>([
+      isImportant: false,
+      status: 'doing'
+    },
     { 
       id: 3, 
-      category: { id: 'home', name: 'خانه', color: 'text-emerald-600', bg: 'bg-emerald-50', rawColor: 'bg-emerald-500' }, 
+      category: this.defaultCategories[3], 
       title: 'خرید اقلام هفتگی خانه', 
       desc: 'تهیه لیست خرید و مراجعه به فروشگاه زنجیره‌ای برای لوازم مصرفی آشپزخانه.', 
       isUrgent: false,
       isImportant: false,
-      isDone: true 
+      status: 'done'
     }
-  ]);
+  ]
 
-  todoTasks$ = this.todoTasksSubject.asObservable();
-  doingTasks$ = this.doingTasksSubject.asObservable();
-  doneTasks$ = this.doneTasksSubject.asObservable();
+  // تعریف اولیه دسته‌بندی‌ها
+  private categoriesSubject = new BehaviorSubject<Category[]>(this.loadCategoriesFromStorage());
+  categories$ = this.categoriesSubject.asObservable();
+
+  private initTasks = this.loadTasksFromStorage();
+  private tasksSubject = new BehaviorSubject<Task[]>(this.initTasks);
+  tasks$ = this.tasksSubject.asObservable();
+
+  todoTasks$ = this.getTasksByStatus('todo');
+  doingTasks$ = this.getTasksByStatus('doing');
+  doneTasks$ = this.getTasksByStatus('done');
+
+  getTasksByStatus(status: 'todo' | 'doing' | 'done') {
+    return this.tasks$.pipe(
+      map(tasks => tasks.filter(t => t.status === status))
+    );
+  }
+  
+  // ذخیره اطلاعات در مرورگر
+  private saveCategoriesToStorage(cats: Category[]) {
+    localStorage.setItem(this.CATEGORIES_STORAGE_KEY, JSON.stringify(cats));
+  }
+  
+  private saveTasksToStorage(tasks: Task[]) {
+    localStorage.setItem(this.TASKS_STORAGE_KEY, JSON.stringify(tasks));
+  }
+  
+  // لود اطلاعات از مرورگر
+  private loadCategoriesFromStorage(): Category[] {
+    const saved = localStorage.getItem(this.CATEGORIES_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : this.defaultCategories;
+  }
+  
+  // لود اطلاعات از مرورگر
+  private loadTasksFromStorage(): Task[] {
+    const saved = localStorage.getItem(this.TASKS_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : this.defaultTasks;
+  }
 
   // متد ویرایش دسته‌بندی (حالا بسیار ساده‌تر و بهینه‌تر از قبل عمل می‌کند)
   updateCategory(updatedCat: Category) {
@@ -79,11 +125,10 @@ export class TaskService {
       cat.id === updatedCat.id ? updatedCat : cat
     );
     this.categoriesSubject.next(categories);
+    this.saveCategoriesToStorage(categories);
 
     // ۲. به‌روزرسانی کارت‌های روی بورد بر اساس آبجکت جدید دسته‌بندی
-    this.todoTasksSubject.next(this.updateTaskArrayCategory(this.todoTasksSubject.value, updatedCat));
-    this.doingTasksSubject.next(this.updateTaskArrayCategory(this.doingTasksSubject.value, updatedCat));
-    this.doneTasksSubject.next(this.updateTaskArrayCategory(this.doneTasksSubject.value, updatedCat));
+    this.tasksSubject.next(this.updateTaskArrayCategory(this.tasksSubject.value, updatedCat));
   }
 
   // متد کمکی برای اصلاح ارجاع آبجکت دسته‌بندی درون کارت‌ها
@@ -97,24 +142,32 @@ export class TaskService {
   }
 
   // اصلاح متد اضافه کردن کار جدید
-  addTask(taskData: Omit<Task, 'id' | 'category'>, categoryObj: Category, statusId: string) {
+  addTask(taskData: Omit<Task, 'id' | 'category'>, categoryObj: Category) {
     const newTask: Task = {
       ...taskData,
       id: Date.now(),
-      category: categoryObj,
-      isDone: statusId === 'done'
+      category: categoryObj
     };
 
-    if (statusId === 'done') {
-      this.doneTasksSubject.next([...this.doneTasksSubject.value, newTask]);
-    } else if (statusId === 'doing') {
-      this.doingTasksSubject.next([...this.doingTasksSubject.value, newTask]);
-    } else {
-      this.todoTasksSubject.next([...this.todoTasksSubject.value, newTask]);
-    }
+    const updated = [...this.tasksSubject.value, newTask];
+    this.tasksSubject.next(updated);
+    this.saveTasksToStorage(updated);
   }
 
-  updateTodoTasks(tasks: Task[]) { this.todoTasksSubject.next(tasks); }
-  updateDoingTasks(tasks: Task[]) { this.doingTasksSubject.next(tasks); }
-  updateDoneTasks(tasks: Task[]) { this.doneTasksSubject.next(tasks); }
+  updateTask(task: Task) {
+    const tasks = this.tasksSubject.value.map(_task => _task.id === task.id ? {...task} : _task);
+    this.tasksSubject.next(tasks);
+    this.saveTasksToStorage(tasks);
+  }
+
+  // updateTodoTasks(tasks: Task[]) { this.todoTasksSubject.next(tasks); }
+  // updateDoingTasks(tasks: Task[]) { this.doingTasksSubject.next(tasks); }
+  // updateDoneTasks(tasks: Task[]) { this.doneTasksSubject.next(tasks); }
+
+  addCategory(newCat: Category) {
+    const currentCats = this.categoriesSubject.value;
+    const updated = [...currentCats, newCat];
+    this.categoriesSubject.next(updated);
+    this.saveCategoriesToStorage(updated);
+  }
 }

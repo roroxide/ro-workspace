@@ -1,7 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TaskService, Category } from '../../services/task.service';
+import { TaskService, Category, TaskStatus } from '../../services/task.service';
+
+interface TaskOption {
+  id: TaskStatus;
+  name: string
+}
 
 @Component({
   selector: 'app-new-task-modal',
@@ -25,16 +30,14 @@ export class NewTaskModalComponent implements OnInit {
 
   selectedCategory: Category = { 
     id: 'none', 
-    name: 'بدون دسته‌بندی', 
-    color: 'text-gray-600', 
-    bg: 'bg-gray-50', 
+    name: 'بدون دسته‌بندی',
     rawColor: 'bg-gray-400' 
   };
-  selectedStatus = { id: 'todo', name: 'آماده (Todo)' };
+  selectedStatus: TaskOption = { id: 'todo', name: 'آماده (Todo)' };
 
   categories: Category[] = [];
 
-  statuses = [
+  statuses: TaskOption[] = [
     { id: 'todo', name: 'آماده (Todo)' },
     { id: 'doing', name: 'در حال انجام (Doing)' },
     { id: 'done', name: 'انجام شده (Done)' }
@@ -79,8 +82,9 @@ export class NewTaskModalComponent implements OnInit {
       title: this.taskTitle,
       desc: this.taskDesc,
       isUrgent: this.isUrgent,
-      isImportant: this.isImportant
-    }, this.selectedCategory, this.selectedStatus.id);
+      isImportant: this.isImportant,
+      status: this.selectedStatus.id
+    }, this.selectedCategory);
 
     this.onClose();
   }
