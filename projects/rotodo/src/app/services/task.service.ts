@@ -170,4 +170,18 @@ export class TaskService {
     this.categoriesSubject.next(updated);
     this.saveCategoriesToStorage(updated);
   }
+
+  // در TaskService
+  clearAllData() {
+    // پاک کردن از لوکال استوریج
+    localStorage.removeItem('kanban_cats');
+    localStorage.removeItem('kanban_tasks');
+    
+    // ریست کردن BehaviorSubjectها برای آپدیت فوری در برنامه
+    this.categoriesSubject.next([]); 
+    this.tasksSubject.next([]);
+    
+    // اختیاری: می‌توانید صفحه را رفرش کنید تا اپلیکیشن کاملاً به حالت اولیه برگردد
+    // window.location.reload();
+  }
 }
