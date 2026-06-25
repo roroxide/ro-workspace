@@ -24,7 +24,7 @@ export type TaskStatus = 'todo' | 'doing' | 'done';
 })
 export class TaskService {
   private CATEGORIES_STORAGE_KEY = 'rotodo_categories';
-  private TASKS_STORAGE_KEY = 'kanban_tasks';
+  private TASKS_STORAGE_KEY = 'rotodo_tasks';
 
   private defaultCategories = [
     { 
@@ -174,12 +174,14 @@ export class TaskService {
   // در TaskService
   clearAllData() {
     // پاک کردن از لوکال استوریج
-    localStorage.removeItem('kanban_cats');
-    localStorage.removeItem('kanban_tasks');
+    localStorage.removeItem(this.CATEGORIES_STORAGE_KEY);
+    localStorage.removeItem(this.TASKS_STORAGE_KEY);
     
     // ریست کردن BehaviorSubjectها برای آپدیت فوری در برنامه
-    this.categoriesSubject.next([]); 
+    this.categoriesSubject.next([]);
+    this.saveCategoriesToStorage([]);
     this.tasksSubject.next([]);
+    this.saveTasksToStorage([]);
     
     // اختیاری: می‌توانید صفحه را رفرش کنید تا اپلیکیشن کاملاً به حالت اولیه برگردد
     // window.location.reload();
