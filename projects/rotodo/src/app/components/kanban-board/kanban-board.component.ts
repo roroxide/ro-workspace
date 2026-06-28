@@ -5,11 +5,12 @@ import { TaskService, Task, Category } from '../../services/task.service';
 import { FilterToolbarComponent } from '../filter-toolbar/filter-toolbar.component'; // ۱. امپورت کامپوننت فیلتر
 import { Subscription } from 'rxjs';
 import { TaskEditModalComponent } from '../task-edit-modal/task-edit-modal.component';
+import { TaskCardComponent } from '../task-card/task-card.component';
 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [CommonModule, DragDropModule, FilterToolbarComponent, TaskEditModalComponent], // ۲. ثبت در ایمپورت‌ها
+  imports: [CommonModule, DragDropModule, FilterToolbarComponent, TaskEditModalComponent, TaskCardComponent], // ۲. ثبت در ایمپورت‌ها
   templateUrl: './kanban-board.component.html',
   styleUrl: './kanban-board.component.scss'
 })

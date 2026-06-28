@@ -1,0 +1,60 @@
+<div cdkDrag
+    class="bg-white p-4 rounded-xl shadow-sm border-r-4 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing space-y-3"
+    [style.border-right-color]="task.category.rawColor">
+
+    @if (task.status === 'done') {
+        <div class="flex justify-between items-start">
+            <span [style.background-color]="task.category.rawColor + '4D'" [style.color]="task.category.rawColor" [className]="'text-xs font-bold px-2 py-1 rounded'">{{ task.category.name }}</span>
+            <span class="text-xs text-gray-400 line-through">تکمیل شده</span>
+          </div>
+          
+          <h3 class="font-bold text-gray-700 text-sm line-through leading-6">{{ task.title }}</h3>
+          <p class="text-xs text-gray-400 line-through line-clamp-2">{{ task.desc }}</p>
+    }
+    @if (task.status === 'doing') {
+        <div class="flex justify-between items-start">
+            <span [style.background-color]="task.category.rawColor + '4D'" [style.color]="task.category.rawColor"
+                class="text-xs font-bold px-2 py-1 rounded">
+                {{ task.category.name }}
+            </span>
+
+            <div class="flex gap-1 flex-wrap">
+                <span *ngIf="task.isUrgent && task.isImportant"
+                    class="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">🚨
+                    فوری و مهم</span>
+                <span *ngIf="task.isUrgent && !task.isImportant"
+                    class="text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 px-1.5 py-0.5 rounded">📌
+                    فوری</span>
+                <span *ngIf="!task.isUrgent && task.isImportant"
+                    class="text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded">⭐️
+                    مهم</span>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-gray-800 text-sm leading-6">{{ task.title }}</h3>
+        <p class="text-xs text-gray-500 line-clamp-2">{{ task.desc }}</p>
+    }
+    @if (task.status === 'todo') {
+        <div class="flex justify-between items-start">
+            <span [style.background-color]="task.category.rawColor + '4D'" [style.color]="task.category.rawColor"
+                class="text-xs font-bold px-2 py-1 rounded">
+                {{ task.category.name }}
+            </span>
+
+            <div class="flex gap-1 flex-wrap">
+                <span *ngIf="task.isUrgent && task.isImportant"
+                    class="text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">🚨
+                    فوری و مهم</span>
+                <span *ngIf="task.isUrgent && !task.isImportant"
+                    class="text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 px-1.5 py-0.5 rounded">📌
+                    فوری</span>
+                <span *ngIf="!task.isUrgent && task.isImportant"
+                    class="text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded">⭐️
+                    مهم</span>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-gray-800 text-sm leading-6">{{ task.title }}</h3>
+        <p class="text-xs text-gray-500 line-clamp-2">{{ task.desc }}</p>
+    }
+</div>
