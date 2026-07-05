@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@rotodo/ui": {
+      "signature": "a55182c7b25501557d88eff802a48a2b",
+      "file": true,
+      "replaced": "file:packages/rotodo-ui-0.0.1.tgz"
+    }
+  }
+}

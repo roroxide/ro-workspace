@@ -13,6 +13,14 @@ fs.readdirSync(distUi)
     fs.unlinkSync(path.join(distUi, file));
   });
 
+console.log('yalc push ...');
+
+// yalc
+execSync('yalc push', {
+  cwd: distUi,
+  stdio: 'inherit'
+});
+
 console.log('Packing ui...');
 
 // ساخت package

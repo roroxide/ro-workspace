@@ -1,0 +1,7 @@
+/*
+ * Public API Surface of ui
+ */
+export * from './lib/ui.service';
+export * from './lib/ui.component';
+export * from './lib/toggle-switch/toggle-switch.component';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL3VpL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYyxrQkFBa0IsQ0FBQztBQUNqQyxjQUFjLG9CQUFvQixDQUFDO0FBQ25DLGNBQWMsNkNBQTZDLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogUHVibGljIEFQSSBTdXJmYWNlIG9mIHVpXG4gKi9cblxuZXhwb3J0ICogZnJvbSAnLi9saWIvdWkuc2VydmljZSc7XG5leHBvcnQgKiBmcm9tICcuL2xpYi91aS5jb21wb25lbnQnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvdG9nZ2xlLXN3aXRjaC90b2dnbGUtc3dpdGNoLmNvbXBvbmVudCc7XG4iXX0=
