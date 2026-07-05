@@ -13,8 +13,10 @@
     
     <div *ngIf="columnVisibility.todo" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
       <div class="flex items-center justify-between mb-4 px-1 shrink-0">
-        <span class="font-bold text-gray-700 text-sm">آماده</span>
+        <span class="font-bold text-gray-700 text-sm">
         <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(todoTasks) }}</span>
+          &nbsp;آماده
+        </span>
       </div>
       
       <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" (cdkDropListDropped)="onTaskDrop($event)" class="flex-1 overflow-y-auto pr-1 pb-4 min-h-0 space-y-3">
@@ -38,8 +40,10 @@
 
     <div *ngIf="columnVisibility.doing" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
       <div class="flex items-center justify-between mb-4 px-1 shrink-0">
-        <span class="font-bold text-gray-700 text-sm">در حال انجام</span>
-        <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doingTasks) }}</span>
+        <span class="font-bold text-gray-700 text-sm">
+          <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doingTasks) }}</span>
+          &nbsp;در حال انجام
+        </span>
       </div>
       
       <div id="doingList" 
@@ -60,8 +64,17 @@
 
     <div *ngIf="columnVisibility.done" class="bg-gray-100 p-4 rounded-2xl border border-gray-200/60 shadow-inner flex flex-col h-full min-h-0">
       <div class="flex items-center justify-between mb-4 px-1 shrink-0">
-        <span class="font-bold text-gray-700 text-sm">انجام شده</span>
-        <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doneTasks) }}</span>
+        <span class="font-bold text-gray-700 text-sm">
+          <span class="text-xs bg-gray-200 px-2 py-0.5 rounded-md text-gray-600 font-bold">{{ getFilteredCount(doneTasks) }}</span>
+          &nbsp;انجام شده
+        </span>
+        <svg (click)="printDoneTasks()" width="24" height="24" class="pointer print-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9V3h12v6"></path>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="7" rx="1"></rect>
+          <line x1="8" y1="17" x2="16" y2="17"></line>
+          <circle cx="18" cy="12" r="1" fill="currentColor" stroke="none"></circle>
+        </svg>
       </div>
 
       <div id="doneList" 
@@ -90,3 +103,20 @@
   (close)="closeEditModal()"
   (save)="saveEditedTask($event)">
 </app-task-edit-modal>
+
+
+<div #printArea class="print-area" *ngIf="showDonePrintModal">
+
+  <div class="column">
+    <div  [style.border]="'1px solid ' + item.category.rawColor" [style.borderRadius]="'8px'" class="item" *ngFor="let item of firstColumn">
+      {{ item.title }}
+    </div>
+  </div>
+
+  <div class="column">
+    <div  [style.border]="'1px solid ' + item.category.rawColor" [style.borderRadius]="'8px'" class="item" *ngFor="let item of secondColumn">
+      {{ item.title }}
+    </div>
+  </div>
+
+</div>

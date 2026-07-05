@@ -1,0 +1,46 @@
+::ng-deep {
+
+
+@page {
+  size: A5 portrait;
+  margin: 8mm;
+}
+
+@media print {
+
+
+  app-root > * {
+    visibility: hidden !important;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible !important;
+  }
+
+  .print-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+    width: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+  }
+
+  .item {
+    border: 1px solid #ccc;
+    padding: 3mm;
+    break-inside: avoid;
+  }
+
+}
+
+}

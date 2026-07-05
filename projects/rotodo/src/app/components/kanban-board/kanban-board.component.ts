@@ -32,6 +32,18 @@ export class KanbanBoardComponent implements OnInit, OnDestroy {
     done: true
   };
 
+  showDonePrintModal = false;
+
+  get firstColumn() {
+    const half = Math.ceil(this.doneTasks.length / 2);
+    return this.doneTasks.slice(0, half);
+  }
+
+  get secondColumn() {
+    const half = Math.ceil(this.doneTasks.length / 2);
+    return this.doneTasks.slice(half);
+  }
+
   private subs = new Subscription();
 
   // مدیریت وضعیت مودال ادیت تسک
@@ -45,6 +57,8 @@ export class KanbanBoardComponent implements OnInit, OnDestroy {
     this.subs.add(this.taskService.doingTasks$.subscribe(tasks => this.doingTasks = tasks));
     this.subs.add(this.taskService.doneTasks$.subscribe(tasks => this.doneTasks = tasks));
     this.subs.add(this.taskService.categories$.subscribe(cats => this.categories = cats));
+
+    window.addEventListener('afterprint', this.afterPrint.bind(this));
   }
 
   // متد جدید: باز کردن مودال هنگام کلیک روی کارت
@@ -57,6 +71,17 @@ export class KanbanBoardComponent implements OnInit, OnDestroy {
   closeEditModal() {
     this.selectedTaskToEdit = null;
     this.isEditModalOpen = false;
+  }
+
+  printDoneTasks() {
+    this.showDonePrintModal = true;
+    setTimeout(() => {
+      window.print()
+    }, 1000)
+  }
+
+  afterPrint() {
+    this.showDonePrintModal = false;
   }
 
   // متد جدید: ذخیره نهایی تسک ویرایش شده
@@ -112,5 +137,8 @@ export class KanbanBoardComponent implements OnInit, OnDestroy {
     // this.taskService.updateDoneTasks([...this.doneTasks]);
   }
 
-  ngOnDestroy() { this.subs.unsubscribe(); }
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+    window.removeEventListener('afterprint', this.afterPrint);
+  }
 }
