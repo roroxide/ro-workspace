@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@rotodo/ui": {
-      "signature": "38f80398b24507014e2b3db0e61b7d8e",
+      "signature": "1ad102bd61fc4eeb0c5f7b89b1c72a9c",
       "file": true,
       "replaced": "file:packages/rotodo-ui-0.0.1.tgz"
     }
