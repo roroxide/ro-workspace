@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:ui": "ng build ui && node scripts/post-build-ui.js"
+    "build:ui": "ng build ui && node scripts/post-build-ui.js",
+    "rotodo:pwa": "node scripts/rotodo-build-pwa.js"
   },
   "private": true,
   "dependencies": {
